@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	"jsonfs"
+	"github.com/minixxie/jsonfs"
 )
 
 func main() {
-	projectFolderPath := "/tmp/nodejs-project"
+	projectFolderPath := "/tmp/old/nodejs-project"
 
 	folderJSONStr, err := jsonfs.Marshal(projectFolderPath)
 	if err != nil {

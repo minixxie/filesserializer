@@ -10,6 +10,7 @@ RUN go mod download
 
 ADD . .
 RUN ./scripts/build.sh
+RUN cp ./scripts/test.sh /test.sh
 RUN cp ./bin/app /
 
-ADD ./nodejs-project /tmp/nodejs-project
+ADD ./nodejs-project /tmp/old/nodejs-project
