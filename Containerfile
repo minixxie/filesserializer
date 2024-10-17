@@ -10,11 +10,6 @@ RUN go mod download
 
 ADD . .
 RUN ./scripts/build.sh
-RUN cp ./bin/app /tmp/
-
-FROM gcr.io/distroless/base
-COPY --from=golang /tmp/app /app
+RUN cp ./bin/app /
 
 ADD ./nodejs-project /tmp/nodejs-project
-
-ENTRYPOINT ["/app"]

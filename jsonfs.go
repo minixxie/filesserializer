@@ -27,12 +27,16 @@ func Marshal(folderPath string) (string, error) {
 			return err
 		}
 		if !info.IsDir() {
+			relativePath, err := filepath.Rel(folderPath, path)
+			if err != nil {
+				return err
+			}
 			content, err := ioutil.ReadFile(path)
 			if err != nil {
 				return err
 			}
 			result.Files = append(result.Files, File{
-				Name:    info.Name(),
+				Name:    relativePath,
 				Content: string(content),
 			})
 		}
@@ -48,4 +52,33 @@ func Marshal(folderPath string) (string, error) {
 	}
 
 	return string(resultBytes), nil
+}
+
+func Unmarshal(jsonStr, destPath string) error {
+	var result Result
+	err := json.Unmarshal([]byte(jsonStr), &result)
+	if err != nil {
+		return fmt.Errorf("error unmarshaling JSON: %w", err)
+	}
+
+	folderPath := filepath.Join(destPath, result.Folder)
+	err = os.MkdirAll(folderPath, os.ModePerm)
+	if err != nil {
+		return fmt.Errorf("error creating folder: %w", err)
+	}
+
+	for _, file := range result.Files {
+		filePath := filepath.Join(folderPath, file.Name)
+		dir := filepath.Dir(filePath)
+		err = os.MkdirAll(dir, os.ModePerm)
+		if err != nil {
+			return fmt.Errorf("error creating directory %s: %w", dir, err)
+		}
+		err := ioutil.WriteFile(filePath, []byte(file.Content), os.ModePerm)
+		if err != nil {
+			return fmt.Errorf("error writing file %s: %w", filePath, err)
+		}
+	}
+
+	return nil
 }

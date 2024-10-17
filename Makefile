@@ -10,6 +10,10 @@ getimg:
 build:
 	nerdctl --namespace=k8s.io build . -t local/${APP}:dont_push
 
+.PHONY: clean
+clean:
+	nerdctl --namespace=k8s.io rmi -f local/${APP}:dont_push
+
 .PHONY: golang
 golang:
 	nerdctl --namespace=k8s.io run --rm -it \
@@ -27,4 +31,5 @@ gofmt:
 .PHONY: run
 run:
 	nerdctl --namespace=k8s.io run --rm -it \
-		local/${APP}:dont_push
+		local/${APP}:dont_push bash -c \
+		'echo "/tmp/new/:" && ls -ld /tmp/new || true && find /tmp/nodejs-project -type f | xargs md5sum && /app && echo "/tmp/new/(After Unmarshal):" && ls -lt /tmp/new/ && find /tmp/new/ -type f | xargs md5sum'

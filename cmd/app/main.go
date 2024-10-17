@@ -15,4 +15,10 @@ func main() {
 	}
 
 	fmt.Println(folderJSONStr)
+
+	err = jsonfs.Unmarshal(folderJSONStr, "/tmp/new/")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 }
